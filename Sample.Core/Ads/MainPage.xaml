@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Sample"
+             x:Class="Sample.MainPage"
+             Title="Beacon Ads Plugin">
+
+    <ContentPage.BindingContext>
+        <local:MainViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Label Text="UUID" />
+            <Entry Text="{Binding Uuid}" />
+
+            <Label Text="Major" />
+            <Entry Text="{Binding Major}" />
+
+            <Label Text="Minor" />
+            <Entry Text="{Binding Minor}" />
+
+            <Button Text="{Binding StartStopText}" Command="{Binding ToggleAdvertisement}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

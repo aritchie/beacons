@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard1.0</TargetFramework>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AssemblyName>Plugin.Beacons</AssemblyName>
+        <RootNamespace>Plugin.Beacons</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Plugin.BluetoothLE" Version="4.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Plugin.Beacons.Abstractions\Plugin.Beacons.Abstractions.csproj" />
+    </ItemGroup>
+
+    <Import Project="..\Plugin.Beacons.Shared\Plugin.Beacons.Shared.projitems" Label="Shared" />
+
+</Project>

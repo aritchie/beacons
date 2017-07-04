@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Plugin.iBeacons</id>
+        <version>1.0.0</version>
+        <title>ACR iBeacons Plugin for Xamarin and Windows</title>
+        <summary>Ranges and monitors (background) iBeacons</summary>
+        <description>
+Ranges and background monitors for iBeacons
+
+Supported Platforms
+- iOS
+- Android
+- UWP
+- .NET Standard
+        </description>
+        <authors>Allan Ritchie</authors>
+        <owners>Allan Ritchie</owners>
+        <iconUrl>https://github.com/aritchie/beacons/icon.png</iconUrl>
+        <licenseUrl>https://github.com/aritchie/beacons/LICENSE.md</licenseUrl>
+        <projectUrl>https://github.com/aritchie/beacons</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <tags>windows xamarin xam.pcl ble beacons ios android</tags>
+        <dependencies>
+            <group>
+                <dependency id="System.Reactive" version="[3.1.1, 4)" />
+            </group>
+            <group targetFramework="MonoAndroid10">
+                <dependency id="Plugin.BluetoothLE" version="[1.0.3, 2)" />
+            </group>
+            <group targetFramework="uap10.0">
+                <dependency id="Plugin.BluetoothLE" version="[1.0.3, 2)" />
+            </group>
+        </dependencies>
+        <releaseNotes>
+1.0
+Initial Release
+        </releaseNotes>
+    </metadata>
+    <files>
+        <!-- netstandard -->
+        <file src="..\Plugin.Beacons\bin\Release\netstandard1.0\Acr.iBeacons.*" target="lib\netstandard1.0" />
+
+        <!-- android -->
+        <file src="..\Acr.iBeacons.Generic\bin\Release\Acr.iBeacons.*" target="lib\MonoAndroid10" />
+
+        <!-- ios -->
+        <file src="..\Acr.iBeacons.iOS\bin\Release\Acr.iBeacons.*" target="lib\Xamarin.iOS10" />
+    </files>
+</package>

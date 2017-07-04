@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<acr:ContentPage
+	xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:acr="clr-namespace:Acr.XamForms;assembly=Acr.XamForms"
+	x:Class="Samples.Pages.Beacons.RangingPage"
+	Title="Beacon Ranging">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Binding ScanText}" Command="{Binding ScanToggle}" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+		<acr:ListView 
+			ItemsSource="{Binding Beacons}" 
+			IsGroupingEnabled="true" 
+			GroupDisplayBinding="{Binding Name}">
+			<ListView.GroupHeaderTemplate>
+				<DataTemplate>
+					<ViewCell>
+						<ViewCell.View>
+							<ContentView Padding="20,0,0,0">
+								<Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+							</ContentView>
+						</ViewCell.View>
+					</ViewCell>
+				</DataTemplate>
+			</ListView.GroupHeaderTemplate>
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<TextCell Text="{Binding Identifier}" Detail="{Binding Proximity}" />
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</acr:ListView>
+	</ContentPage.Content>
+</acr:ContentPage>
