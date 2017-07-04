@@ -2,7 +2,7 @@
 
 Scans for iBeacons and Eddystone beacons
 
-[![NuGet](https://img.shields.io/nuget/v/Acr.Ble.svg?maxAge=2592000)](https://www.nuget.org/packages/Acr.Ble/)
+[![NuGet](https://img.shields.io/nuget/v/Plugin.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Beacons/)
 
 [Change Log](docs/changelog.md)
 
