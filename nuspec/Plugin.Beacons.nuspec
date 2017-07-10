@@ -26,10 +26,10 @@ Supported Platforms
                 <dependency id="System.Reactive" version="[3.1.1, 4)" />
             </group>
             <group targetFramework="MonoAndroid10">
-                <dependency id="Plugin.BluetoothLE" version="[1.0.3, 2)" />
+                <dependency id="Plugin.BluetoothLE" version="[4, 5)" />
             </group>
             <group targetFramework="uap10.0">
-                <dependency id="Plugin.BluetoothLE" version="[1.0.3, 2)" />
+                <dependency id="Plugin.BluetoothLE" version="[4, 5)" />
             </group>
         </dependencies>
         <releaseNotes>
@@ -39,12 +39,15 @@ Initial Release
     </metadata>
     <files>
         <!-- netstandard -->
-        <file src="..\Plugin.Beacons\bin\Release\netstandard1.0\Acr.iBeacons.*" target="lib\netstandard1.0" />
+        <file src="..\Plugin.Beacons\bin\Release\netstandard1.0\Plugin.Beacons.*" target="lib\netstandard1.0" />
 
         <!-- android -->
-        <file src="..\Acr.iBeacons.Generic\bin\Release\Acr.iBeacons.*" target="lib\MonoAndroid10" />
+        <file src="..\Plugin.Beacons.Generic\bin\Release\Plugin.Beacons.*" target="lib\MonoAndroid10" />
 
         <!-- ios -->
-        <file src="..\Acr.iBeacons.iOS\bin\Release\Acr.iBeacons.*" target="lib\Xamarin.iOS10" />
+        <file src="..\Plugin.Beacons.iOS\bin\Release\Plugin.Beacons.*" target="lib\Xamarin.iOS10" />
+
+        <!-- uwp -->
+        <file src="..\Plugin.Beacons.Generic\bin\Release\Plugin.Beacons.*" target="lib\uap10.0" />
     </files>
 </package>

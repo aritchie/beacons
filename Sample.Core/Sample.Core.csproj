@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
+    <RootNamespace>Sample</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Acr.UserDialogs" Version="6.5.1" />
+    <PackageReference Include="reactiveui" Version="7.5.0-alpha0030" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
     <PackageReference Include="Xamarin.Forms" Version="2.3.5.256-pre6" />
   </ItemGroup>
