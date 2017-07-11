@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 
 namespace Plugin.Beacons
@@ -11,8 +10,7 @@ namespace Plugin.Beacons
         //void StartAdvertising(Beacon beacon);
         //void StopAdvertising();
 
-        Task<bool> RequestPermission();
-
+        IObservable<bool> RequestPermission();
         IObservable<RangedBeaconList> WhenBeaconsRanged(params BeaconRegion[] regions);
 
         void StartMonitoring(BeaconRegion region);
