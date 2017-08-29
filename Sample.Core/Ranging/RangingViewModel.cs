@@ -4,13 +4,15 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using Acr.iBeacons;
+using Plugin.Beacons;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Sample.Ranging;
 using Samples.Services;
 using Xamarin.Forms;
 
 
-namespace Samples.ViewModels.Beacons
+namespace Samples.Beacons
 {
     public class RangingViewModel : AbstractRootViewModel
     {
@@ -30,7 +32,7 @@ namespace Samples.ViewModels.Beacons
                     this.Beacons.Clear();
                     this.ScanText = "Stop Scan";
                     this.scanner = this.BeaconManager
-                        .WhenBeaconsRanged(
+                        .WhenRanged(
                             new BeaconRegion("estimote", new Guid("B9407F30-F5F8-466E-AFF9-25556B57FE6D"))
                         )
                         .Where(x => x.Beacons.Count > 0)

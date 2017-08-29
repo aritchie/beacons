@@ -23,7 +23,6 @@ namespace Plugin.Beacons
 
         public bool IsBeaconInRegion(Beacon beacon)
         {
-
             if (!this.Uuid.Equals(beacon.Uuid))
                 return false;
 
@@ -41,9 +40,7 @@ namespace Plugin.Beacons
 
 
         public override string ToString()
-        {
-            return $"[Identifier: {this.Identifier} - UUID: {this.Uuid} - Major: {this.Major ?? 0} - Minor: {this.Minor ?? 0}]";
-        }
+            => $"[Identifier: {this.Identifier} - UUID: {this.Uuid} - Major: {this.Major ?? 0} - Minor: {this.Minor ?? 0}]";
 
 
         public override bool Equals(object obj)

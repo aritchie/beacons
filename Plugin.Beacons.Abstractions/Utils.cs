@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 
@@ -8,10 +7,7 @@ namespace Plugin.Beacons
 {
     public static class Utils
     {
-        public static bool IsEmpty(this string @string)
-        {
-            return String.IsNullOrWhiteSpace(@string);
-        }
+        public static bool IsEmpty(this string @string) => String.IsNullOrWhiteSpace(@string);
 
 
         public static string FromHexUuid(this string value)
@@ -24,11 +20,10 @@ namespace Plugin.Beacons
 
         public static bool TryFromHexUuid(this string value, out string uuid)
         {
-            Guid guid;
             uuid = null;
             var raw = value.Replace("-", String.Empty);
 
-            if (Guid.TryParse(raw, out guid))
+            if (Guid.TryParse(raw, out var guid))
             {
                 uuid = guid.ToString();
                 return true;
@@ -56,12 +51,6 @@ namespace Plugin.Beacons
         }
 
 
-        public static string ToHexString(this byte[] bytes)
-        {
-            return String.Concat(bytes.Select(b => b.ToString("X2")));
-        }
-
-
-        
+        public static string ToHexString(this byte[] bytes) => String.Concat(bytes.Select(b => b.ToString("X2")));
     }
 }

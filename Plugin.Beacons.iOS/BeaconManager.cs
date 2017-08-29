@@ -20,7 +20,7 @@ namespace Plugin.Beacons
         }
 
 
-        public Task<bool> RequestPermission()
+        public IObservable<bool> RequestPermission()
         {
             //if (CLLocationManager.RegionMonitoringEnabled)
             //CLLocationManager.RegionMonitoringAvailable
@@ -62,55 +62,54 @@ namespace Plugin.Beacons
 
 
  //           return tcs.Task;
-            throw new NotImplementedException();
+            return Observable.Return(true);
         }
 
 
-        public IObservable<RangedBeaconList> WhenBeaconsRanged(params BeaconRegion[] regions)
+        public IObservable<RangedBeaconResults> WhenBeaconsRanged(params BeaconRegion[] regions) => Observable.Create<RangedBeaconResults>(ob =>
         {
-            return Observable.Create<RangedBeaconList>(ob =>
+            var beacons = new Dictionary<string, Beacon>();
+            var found = new List<Beacon>();
+
+            foreach (var region in regions)
+            {
+                var native = this.ToNative(region);
+                this.manager.StartRangingBeacons(native);
+            }
+
+            var handler = new EventHandler<CLRegionBeaconsRangedEventArgs>((sender, args) =>
+            {
+                found.Clear();
+
+                foreach (var native in args.Beacons)
+                {
+                    // also very allocatey
+                    var beacon = new Beacon
+                    (
+                        native.ProximityUuid.FromNative(),
+                        native.Major.UInt16Value,
+                        native.Minor.UInt16Value,
+                        native.Accuracy,
+                        this.FromNative(native.Proximity)
+                    );
+                    found.Add(beacon);
+                }
+                var region = this.FromNative(args.Region);
+                //var rbl = new RangedBeaconList(region, list);
+                Debug.WriteLine($"[acr.beacons] Ranged {rbl.Beacons.Count} in {rbl.Region}");
+                ob.OnNext(rbl);
+            });
+            this.manager.DidRangeBeacons += handler;
+            return () =>
             {
                 foreach (var region in regions)
                 {
                     var native = this.ToNative(region);
-                    this.manager.StartRangingBeacons(native);
+                    this.manager.StopRangingBeacons(native);
                 }
-
-                var handler = new EventHandler<CLRegionBeaconsRangedEventArgs>((sender, args) =>
-                {
-                    // very allocatey
-                    var list = new List<Beacon>();
-                    foreach (var native in args.Beacons)
-                    {
-
-                        // also very allocatey
-                        var beacon = new Beacon
-                        (
-                            native.ProximityUuid.FromNative(),
-                            native.Major.UInt16Value,
-                            native.Minor.UInt16Value,
-                            native.Accuracy,
-                            this.FromNative(native.Proximity)
-                        );
-                        list.Add(beacon);
-                    }
-                    var region = this.FromNative(args.Region);
-                    var rbl = new RangedBeaconList(region, list);
-                    Debug.WriteLine($"[acr.beacons] Ranged {rbl.Beacons.Count} in {rbl.Region}");
-                    ob.OnNext(rbl);
-                });
-                this.manager.DidRangeBeacons += handler;
-                return () =>
-                {
-                    foreach (var region in regions)
-                    {
-                        var native = this.ToNative(region);
-                        this.manager.StopRangingBeacons(native);
-                    }
-                    this.manager.DidRangeBeacons -= handler;
-                };
-            });
-        }
+                this.manager.DidRangeBeacons -= handler;
+            };
+        });
 
 
         public void StartMonitoring(BeaconRegion region)

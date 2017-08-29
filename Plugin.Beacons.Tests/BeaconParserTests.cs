@@ -7,23 +7,31 @@ namespace Plugin.Beacons.Tests
 {
     public class BeaconParserTests
     {
-        [Fact]
-        public void ParseBeaconPacketSuccess()
+        [Theory]
+        [InlineData(
+            "4C0002159DD3C2D7C05E417492D2CC30629E522700010001C6",
+            "9dd3c2d7-c05e-4174-92d2-cc30629e5227",
+            1,
+            1,
+            Proximity.Immediate
+        )]
+        public void ParseBeaconPacketSuccess(string hexData, string beaconIdentifier, ushort major, ushort minor, Proximity prox)
         {
-            var bytes = "4C0002159DD3C2D7C05E417492D2CC30629E522700010001C6".FromHex();
+            var bytes = hexData.FromHex();
             var beacon = Beacon.Parse(bytes, 10);
-            beacon.Uuid.Should().Be(new Guid("9dd3c2d7-c05e-4174-92d2-cc30629e5227"));
-            beacon.Major.Should().Be(1);
-            beacon.Minor.Should().Be(1);
-            beacon.Proximity.Should().Be(Proximity.Immediate);
+            beacon.Uuid.Should().Be(new Guid(beaconIdentifier));
+            beacon.Major.Should().Be(major);
+            beacon.Minor.Should().Be(minor);
+            beacon.Proximity.Should().Be(prox);
         }
 
 
-        [Fact]
-        public void DetectBeacon()
+        [Theory]
+        [InlineData("4C0002159DD3C2D7C05E417492D2CC30629E522700010001C6", true)]
+        public void DetectBeacon(string hexData, bool expectedResult)
         {
-            var bytes = "4C0002159DD3C2D7C05E417492D2CC30629E522700010001C6".FromHex();
-            Beacon.IsIBeaconPacket(bytes).Should().Be(true);
+            var bytes = hexData.FromHex();
+            Beacon.IsIBeaconPacket(bytes).Should().Be(expectedResult);
         }
 
 

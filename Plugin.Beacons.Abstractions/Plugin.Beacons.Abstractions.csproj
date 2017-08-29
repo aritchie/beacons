@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard1.0</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>Plugin.Beacons</RootNamespace>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
@@ -12,6 +12,10 @@
 
     <ItemGroup>
       <PackageReference Include="System.Reactive" Version="3.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="NETStandard.Library" Version="2.0.0" />
     </ItemGroup>
 
 </Project>

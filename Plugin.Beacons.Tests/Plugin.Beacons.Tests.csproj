@@ -1,72 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3784B8BD-495B-4AF2-8363-E5AAFC2C0957}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Plugin.Beacons.Tests</RootNamespace>
-    <AssemblyName>Plugin.Beacons.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="FluentAssertions" Version="4.19.4" />
+    <PackageReference Include="Moq" Version="4.7.99" />
+    <PackageReference Include="Plugin.BluetoothLE" Version="4.0.1" />
+    <PackageReference Include="xunit" Version="2.2.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="BeaconManagerMocks.cs" />
-    <Compile Include="BeaconParserTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\Plugin.Beacons.Abstractions\Plugin.Beacons.Abstractions.csproj" />
+    <ProjectReference Include="..\Plugin.Beacons\Plugin.Beacons.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Plugin.Beacons.Abstractions\Plugin.Beacons.Abstractions.csproj">
-      <Project>{4497e1fa-9184-4263-821c-c17a96434271}</Project>
-      <Name>Plugin.Beacons.Abstractions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plugin.Beacons.Generic\Plugin.Beacons.Generic.csproj">
-      <Project>{4c35648b-ce97-4612-9baf-db6c7bd96f48}</Project>
-      <Name>Plugin.Beacons.Generic</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="FluentAssertions">
-      <Version>4.19.2</Version>
-    </PackageReference>
-    <PackageReference Include="Moq">
-      <Version>4.7.63</Version>
-    </PackageReference>
-    <PackageReference Include="Plugin.BluetoothLE">
-      <Version>4.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Reactive">
-      <Version>3.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="xunit">
-      <Version>2.2.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

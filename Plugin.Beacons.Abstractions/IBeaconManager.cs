@@ -11,7 +11,7 @@ namespace Plugin.Beacons
         //void StopAdvertising();
 
         IObservable<bool> RequestPermission();
-        IObservable<RangedBeaconList> WhenBeaconsRanged(params BeaconRegion[] regions);
+        IObservable<RangedBeaconResults> WhenBeaconsRanged(params BeaconRegion[] regions);
 
         void StartMonitoring(BeaconRegion region);
         void StopMonitoring(BeaconRegion region);

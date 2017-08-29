@@ -151,6 +151,16 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Plugin.Beacons.Abstractions\Plugin.Beacons.Abstractions.csproj">
+      <Project>{4497e1fa-9184-4263-821c-c17a96434271}</Project>
+      <Name>Plugin.Beacons.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Plugin.Beacons.Uwp\Plugin.Beacons.Uwp.csproj">
+      <Project>{75544de9-1a7c-4813-96e1-4f59305ea519}</Project>
+      <Name>Plugin.Beacons.Uwp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
