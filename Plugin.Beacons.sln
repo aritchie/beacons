@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Beacons.Tests", "Plugin.Beacons.Tests\Plugin.Beacons.Tests.csproj", "{F9D975B6-E79A-4014-89B5-82AB7FD86BAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.Beacons.Tests", "Plugin.Beacons.Tests\Plugin.Beacons.Tests.csproj", "{F9D975B6-E79A-4014-89B5-82AB7FD86BAC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Beacons.Android", "Plugin.Beacons.Android\Plugin.Beacons.Android.csproj", "{57B215C8-4356-49E3-A09F-323419E40FC8}"
 EndProject
@@ -47,8 +47,6 @@ Global
 		Plugin.Beacons.Shared\Plugin.Beacons.Shared.projitems*{4cb9fba4-8239-4712-aff4-64a602378225}*SharedItemsImports = 13
 		Plugin.Beacons.Generic.Shared\Plugin.Beacons.Generic.Shared.projitems*{57b215c8-4356-49e3-a09f-323419e40fc8}*SharedItemsImports = 4
 		Plugin.Beacons.Shared\Plugin.Beacons.Shared.projitems*{57b215c8-4356-49e3-a09f-323419e40fc8}*SharedItemsImports = 4
-		Plugin.Beacons.Generic.Shared\Plugin.Beacons.Generic.Shared.projitems*{75544de9-1a7c-4813-96e1-4f59305ea519}*SharedItemsImports = 4
-		Plugin.Beacons.Shared\Plugin.Beacons.Shared.projitems*{75544de9-1a7c-4813-96e1-4f59305ea519}*SharedItemsImports = 4
 		Plugin.Beacons.Generic.Shared\Plugin.Beacons.Generic.Shared.projitems*{f8d32957-3afd-4146-b8db-97b47b896d79}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
