@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{E80EC64C-4720-4C7E-BE3B-DB36A3A74EF9}</ProjectGuid>
+    <ProjectGuid>{43EFF567-5EA8-42D8-962B-FBD895C9C2D5}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Sample.UWP</RootNamespace>
     <AssemblyName>Sample.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
@@ -89,10 +89,6 @@
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <None Include="project.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -105,6 +101,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="Sample.UWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Default.rd.xml" />
@@ -151,13 +148,16 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Plugin.Beacons.Abstractions\Plugin.Beacons.Abstractions.csproj">
-      <Project>{4497e1fa-9184-4263-821c-c17a96434271}</Project>
-      <Name>Plugin.Beacons.Abstractions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Plugin.Beacons.Uwp\Plugin.Beacons.Uwp.csproj">
-      <Project>{75544de9-1a7c-4813-96e1-4f59305ea519}</Project>
-      <Name>Plugin.Beacons.Uwp</Name>
+    <PackageReference Include="ReactiveUI">
+      <Version>8.0.0-alpha0117</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Forms" Version="2.5.0.121934" />
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sample\Sample.csproj">
+      <Project>{273BF9E1-1D66-42A8-8FC5-B80BE85F6583}</Project>
+      <Name>Sample</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
