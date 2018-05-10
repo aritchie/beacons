@@ -5,7 +5,7 @@ using SQLite;
 
 namespace Plugin.Beacons
 {
-    public class SqliteBeaconSettings : IBeaconSettings
+    public class SqliteBeaconSettings
     {
         readonly SQLiteConnection conn;
 
