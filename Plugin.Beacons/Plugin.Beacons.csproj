@@ -1,10 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.55">
 
     <PropertyGroup>
-        <TargetFrameworks></TargetFrameworks>
         <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">netstandard2.0;MonoAndroid80;Xamarin.iOS10;Xamarin.Mac20;uap10.0.16299</TargetFrameworks>
         <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard2.0;MonoAndroid80;Xamarin.iOS10;Xamarin.Mac20</TargetFrameworks>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
         <Authors>aritchie</Authors>
         <Company />
         <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -16,33 +15,41 @@
         <PackageIconUrl>https://github.com/aritchie/beacons/raw/master/icon.png</PackageIconUrl>
         <PackageReleaseNotes>https://github.com/aritchie/beacons/blob/master/docs/changelog.md</PackageReleaseNotes>
         <PackageTags>ios android uwp windows tvos mac macos xamarin rx reactive ble bluetooth bluetoothle ibeacons</PackageTags>
-        <FileVersion>1.0.0.0</FileVersion>
+
+        <RepositoryUrl>https://github.com/aritchie/beacons</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <IncludeSymbols>True</IncludeSymbols>
+        <IncludeSource>True</IncludeSource>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DebugType>full</DebugType>
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)'=='Release' ">
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <DebugType>pdbonly</DebugType>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
         <Compile Remove="Platforms\**\*.cs" />
         <None Include="Platforms\**\*.cs" />
-        <PackageReference Include="System.Reactive" Version="3.1.1" />
-        <PackageReference Include="MSBuild.Sdk.Extras" Version="1.4.0" PrivateAssets="all" />
+        <PackageReference Include="System.Reactive" Version="4.0.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0.16299' OR '$(TargetFramework)' == 'MonoAndroid80' OR '$(TargetFramework)' == 'Xamarin.Mac20' ">
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('uap')) OR $(TargetFramework.StartsWith('MonoAndroid')) OR $(TargetFramework.StartsWith('Xamarin.Mac')) ">
         <Compile Include="Platforms\Others\**\*.cs" />
-        <PackageReference Include="Plugin.BluetoothLE" Version="6.0.3" />
-        <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
+        <PackageReference Include="Plugin.BluetoothLE" Version="6.2.2" />
+        <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">
+    <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
         <Compile Include="Platforms\iOS\**\*.cs" />
     </ItemGroup>
 
-    <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 </Project>
