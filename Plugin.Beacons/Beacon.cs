@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Plugin.Beacons
 {
-    public class Beacon
+    public class Beacon : IEquatable<Beacon>
     {
         public Beacon(Guid uuid, ushort major, ushort minor, double accuracy, Proximity proximity)
         {
@@ -24,35 +24,12 @@ namespace Plugin.Beacons
         public Proximity Proximity { get; }
 
 
-        public override string ToString()
-        {
-            return $"[Beacon: Uuid={this.Uuid}, Major={this.Major}, Minor={this.Minor}]";
-        }
-
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as Beacon;
-            if (other == null)
-                return false;
-
-            if (this.Uuid != other.Uuid)
-                return false;
-
-            if (this.Major != other.Major)
-                return false;
-
-            if (this.Minor != other.Minor)
-                return false;
-
-            return true;
-        }
-
-
-        public override int GetHashCode()
-        {
-            return this.Uuid.GetHashCode() + this.Major.GetHashCode() + this.Minor.GetHashCode();
-        }
+        public override string ToString() => $"[Beacon: Uuid={this.Uuid}, Major={this.Major}, Minor={this.Minor}]";
+        public bool Equals(Beacon other) => (this.Uuid, this.Major, this.Minor) == (other.Uuid, other.Major, other.Minor);
+        public static bool operator ==(Beacon left, Beacon right) => Equals(left, right);
+        public static bool operator !=(Beacon left, Beacon right) => !Equals(left, right);
+        public override bool Equals(object obj) => obj is Beacon beacon && this.Equals(beacon);
+        public override int GetHashCode() => (this.Uuid, this.Major, this.Minor).GetHashCode();
 
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace Plugin.Beacons
         public IObservable<bool> RequestPermission() => Internals.HasPermission();
 
 
-        public IObservable<Beacon> WhenBeaconsRanged(BeaconRegion region)
+        public IObservable<Beacon> WhenBeaconRanged(BeaconRegion region)
         {
             this.SetRegion(region);
             return this.Scan()

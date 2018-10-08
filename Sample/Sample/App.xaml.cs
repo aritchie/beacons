@@ -4,7 +4,6 @@ using Prism;
 using Prism.Autofac;
 using Prism.Ioc;
 using Prism.Mvvm;
-using Samples.Pages.Beacons;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

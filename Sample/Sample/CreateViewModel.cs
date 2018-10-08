@@ -12,6 +12,8 @@ namespace Sample
     {
         public CreateViewModel(INavigationService navigationService)
         {
+            this.Title = "Create Region";
+
             this.Create = ReactiveCommand.CreateFromTask(
                 _ => navigationService.GoBackAsync(new NavigationParameters
                 {
@@ -51,12 +53,5 @@ namespace Sample
         [Reactive] public string Uuid { get; set; }
         [Reactive] public ushort Major { get; set; }
         [Reactive] public ushort Minor { get; set; }
-
-
-        public override void OnNavigatedTo(NavigationParameters parameters)
-        {
-            base.OnNavigatedTo(parameters);
-            var region = parameters.GetValue<BeaconRegion>("Edit");
-        }
     }
 }
