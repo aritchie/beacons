@@ -21,7 +21,7 @@ namespace Sample
         public void Start() => this.beaconManager
             .WhenRegionStatusChanged()
             .Subscribe(x => this.conn.Insert(
-                new DbBeaconStatus
+                new DbBeaconPing
                 {
                     Identifier = x.Region.Identifier,
                     Uuid = x.Region.Uuid,

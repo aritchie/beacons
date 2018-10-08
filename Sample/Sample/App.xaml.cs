@@ -38,7 +38,8 @@ namespace Sample
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage>();
             containerRegistry.RegisterForNavigation<RangingPage>();
-            containerRegistry.RegisterForNavigation<MonitorPage>();
+            containerRegistry.RegisterForNavigation<MonitoringPage>();
+            containerRegistry.RegisterForNavigation<LogsPage>();
             containerRegistry.RegisterForNavigation<CreatePage>();
         }
 

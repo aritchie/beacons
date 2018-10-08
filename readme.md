@@ -1,16 +1,16 @@
 # ACR Reactive Beacons Plugin for Xamarin & Windows
 
-Scans for iBeacons and Eddystone beacons
+Scans for iBeacons
 
 [![NuGet](https://img.shields.io/nuget/v/Plugin.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Beacons/)
 
 [Change Log](changelog.md)
 
-## PLATFORMS
-
-* iOS
-* Android 4.3+
-* Windows UWP
+|Platform|Version|
+|--------|-------|
+|iOS|8+|
+|Android|4.3+|
+|Windows UWP|16299+|
 
 ## SETUP
 
@@ -34,8 +34,6 @@ _Add the following for iBeacon background scanning_
 <string>The beacons always have you!</string>
 ```
 
-_If using Eddystone, add the following for background scanning_
-
 ```xml    
 <array>
 <string>bluetooth-central</string>
@@ -51,11 +49,11 @@ _If using Eddystone, add the following for background scanning_
 
 ### Ranging for Beacons
 
-    var scanner = BeaconService.Instance.Scan().Subscribe(scanResult => {
-        // do something with it
-    });
+var scanner = CrossBeacons.Current.Scan().Subscribe(scanResult => {
+    // do something with it
+});
 
-    scanner.Dispose(); // to stop scanning
+scanner.Dispose(); // to stop scanning
 
 ### Background Monitoring for Beacons
 
@@ -67,8 +65,14 @@ Once you have successfully scanned for a device, use the instance
     });
 
 ## FAQ
+Q) Why is everything reactive instead of events/async
+> I wanted event streams as I was scanning devices.  I also wanted to throttle things like characteristic notification feeds.  Lastly, was the proper cleanup of events and resources.   
 
-* Q) Why is everything reactive instead of events/async
+Q) Why can't I scan for all beacons (no uuid)
+> Because this isn't really how beacons are intended to work, so I haven't exposed this functionality intentionally (nor will I take a FR/PR for it)!
 
-  A) I wanted event streams as I was scanning devices.  I also wanted to throttle things like characteristic notification feeds.  Lastly, was the proper cleanup of events and resources.   
+Q) How many region configurations can I scan for at a time.
+> On iOS, 20 max.  You shouldn't really ever go beyond this on other platforms either
 
+Q) Can I scan for Eddystones with this library
+> No, as the title of this library says, it is currently for iBeacons only!

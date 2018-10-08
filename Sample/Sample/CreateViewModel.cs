@@ -32,12 +32,16 @@ namespace Sample
                         if (!Guid.TryParse(uuid.GetValue(), out _))
                             return false;
 
+                        var Mv = M.GetValue();
+                        if (Mv < 0 || Mv > ushort.MaxValue)
+                            return false;
+
                         var mv = m.GetValue();
                         if (mv < 0 || mv > ushort.MaxValue)
                             return false;
 
-                        var Mv = M.GetValue();
-                        if (Mv < 0 || Mv > ushort.MaxValue)
+                        // if using minor, must have major
+                        if (Mv == 0 || mv > 0)
                             return false;
 
                         return true;

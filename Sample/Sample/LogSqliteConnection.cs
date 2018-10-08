@@ -6,7 +6,7 @@ using SQLite;
 
 namespace Sample
 {
-    public class DbBeaconStatus
+    public class DbBeaconPing
     {
         [PrimaryKey]
         [AutoIncrement]
@@ -24,10 +24,10 @@ namespace Sample
     {
         public LogSqliteConnection() : base(Path.Combine(FileSystem.Current.AppData.FullName, "beacons.db"), true, null)
         {
-            this.CreateTable<DbBeaconStatus>();
+            this.CreateTable<DbBeaconPing>();
         }
 
 
-        public TableQuery<DbBeaconStatus> Beacons => this.Table<DbBeaconStatus>();
+        public TableQuery<DbBeaconPing> Beacons => this.Table<DbBeaconPing>();
     }
 }
