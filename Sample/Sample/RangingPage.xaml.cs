@@ -4,11 +4,12 @@ using Xamarin.Forms;
 
 namespace Sample
 {
-    public partial class MainPage : ContentPage
+    public partial class RangingPage : ContentPage
     {
-        public MainPage()
+        public RangingPage()
         {
             this.InitializeComponent();
         }
     }
 }
+

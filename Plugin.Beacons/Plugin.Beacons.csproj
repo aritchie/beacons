@@ -6,7 +6,7 @@
 
         <Authors>aritchie</Authors>
         <Company />
-        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <LangVersion>latest</LangVersion>
         <Description>ACR iBeacon Plugin for Xamarin and Windows</Description>
         <Product>Plugin.Beacons ($(TargetFramework))</Product>
         <Version>1.0.0</Version>
@@ -39,12 +39,13 @@
         <Compile Remove="Platforms\**\*.cs" />
         <None Include="Platforms\**\*.cs" />
         <PackageReference Include="System.Reactive" Version="4.0.0" />
+        <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
+        <PackageReference Include="Plugin.BluetoothLE" Version="6.2.2" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup Condition=" $(TargetFramework.StartsWith('uap')) OR $(TargetFramework.StartsWith('MonoAndroid')) OR $(TargetFramework.StartsWith('Xamarin.Mac')) ">
         <Compile Include="Platforms\Others\**\*.cs" />
-        <PackageReference Include="Plugin.BluetoothLE" Version="6.2.2" />
         <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     </ItemGroup>
 

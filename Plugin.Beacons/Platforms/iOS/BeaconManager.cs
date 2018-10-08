@@ -66,47 +66,29 @@ namespace Plugin.Beacons
         }
 
 
-        public IObservable<RangedBeaconResults> WhenBeaconsRanged(params BeaconRegion[] regions) => Observable.Create<RangedBeaconResults>(ob =>
+        public IObservable<Beacon> WhenBeaconRanged(BeaconRegion region) => Observable.Create<Beacon>(ob =>
         {
-            var beacons = new Dictionary<string, Beacon>();
-            var found = new List<Beacon>();
-
-            foreach (var region in regions)
-            {
-                var native = this.ToNative(region);
-                this.manager.StartRangingBeacons(native);
-            }
+            var nativeRegion = this.ToNative(region);
+            this.manager.StartRangingBeacons(nativeRegion);
 
             var handler = new EventHandler<CLRegionBeaconsRangedEventArgs>((sender, args) =>
             {
-                found.Clear();
-
                 foreach (var native in args.Beacons)
                 {
-                    // also very allocatey
-                    var beacon = new Beacon
+                    ob.OnNext(new Beacon
                     (
                         native.ProximityUuid.FromNative(),
                         native.Major.UInt16Value,
                         native.Minor.UInt16Value,
                         native.Accuracy,
                         this.FromNative(native.Proximity)
-                    );
-                    found.Add(beacon);
+                    ));
                 }
-                var region = this.FromNative(args.Region);
-                //var rbl = new RangedBeaconList(region, list);
-                //Debug.WriteLine($"[acr.beacons] Ranged {rbl.Beacons.Count} in {rbl.Region}");
-                //ob.OnNext(rbl);
             });
             this.manager.DidRangeBeacons += handler;
             return () =>
             {
-                foreach (var region in regions)
-                {
-                    var native = this.ToNative(region);
-                    this.manager.StopRangingBeacons(native);
-                }
+                this.manager.StopRangingBeacons(nativeRegion);
                 this.manager.DidRangeBeacons -= handler;
             };
         });

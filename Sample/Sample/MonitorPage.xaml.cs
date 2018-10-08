@@ -1,13 +1,15 @@
 ﻿using System;
 using Xamarin.Forms;
 
+
 namespace Sample
 {
-    public partial class MainPage : TabbedPage
+    public partial class MonitorPage : ContentPage
     {
-        public MainPage()
+        public MonitorPage()
         {
             this.InitializeComponent();
         }
     }
 }
+

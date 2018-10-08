@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using Plugin.BluetoothLE;
 
@@ -9,6 +10,7 @@ namespace Plugin.Beacons
     public class BeaconManager : IBeaconManager
     {
         readonly IAdapter adapter;
+        readonly IPluginRepository repository;
         readonly IDictionary<string, BeaconRegionStatus> regionStates;
 
         /*
@@ -33,69 +35,55 @@ namespace Plugin.Beacons
 
             this.AdvertisedBeacon = beacon;
          */
-        public BeaconManager(IAdapter adapter = null)
+        public BeaconManager(IAdapter adapter = null, IPluginRepository repository = null)
         {
             this.adapter = adapter ?? CrossBleAdapter.Current;
+            this.repository = repository ?? new SqlitePluginRepository();
             this.regionStates = new Dictionary<string, BeaconRegionStatus>();
-
-            var regions = Services.Settings.GetTrackingRegions();
+            var regions = this.repository.GetTrackingRegions();
             foreach (var region in regions)
                 this.SetRegion(region);
         }
 
 
-        public IObservable<bool> RequestPermission()
-            => Observable.Return(this.adapter.Status == AdapterStatus.PoweredOn);
+        public IObservable<bool> RequestPermission() => Internals.HasPermission();
 
 
-        public IObservable<RangedBeaconResults> WhenBeaconsRanged(params BeaconRegion[] regions)
+        public IObservable<Beacon> WhenBeaconsRanged(BeaconRegion region)
         {
-            foreach (var region in regions)
-                this.SetRegion(region);
-
-            return Observable.Create<RangedBeaconResults>(ob => this
-                .Scan()
-                .Buffer(TimeSpan.FromSeconds(2))
-                .Subscribe(beacons =>
+            this.SetRegion(region);
+            return this.Scan()
+                .Where(region.IsBeaconInRegion)
+                .Finally(() =>
                 {
-                    foreach (var region in regions)
-                    {
-                        var list = new List<Beacon>();
-                        //var rbl = new RangedBeaconList(region, list);
-
-                        //foreach (var beacon in beacons)
-                        //    if (region.IsBeaconInRegion(beacon))
-                        //        list.Add(beacon);
-
-                        //ob.OnNext(rbl);
-                    }
-                })
-            );
+                    // TODO: remove filter target
+                });
         }
 
 
         public void StartMonitoring(BeaconRegion region)
         {
-            //this.settings.Add(region);
+            this.repository.StartTracking(region);
             this.SetRegion(region);
         }
 
 
         public void StopMonitoring(BeaconRegion region)
         {
-            //this.settings.Remove(region);
-            // TODO: if user doesn't unhook observables, scanning will continue
+            this.repository.StopTracking(region);
+            lock (this.regionStates)
+                this.regionStates.Remove(region.Identifier);
         }
 
 
         public void StopAllMonitoring()
         {
-            // TODO: if user doesn't unhook observables, scanning will continue
-            //this.settings.Clear();
+            this.repository.StopAllTracking();
+            lock (this.regionStates)
+                this.regionStates.Clear();
         }
 
 
-        //public IReadOnlyList<BeaconRegion> MonitoredRegions => this.settings.MonitorRegions;
         public IReadOnlyList<BeaconRegion> MonitoredRegions { get; }
 
 
@@ -140,19 +128,18 @@ namespace Plugin.Beacons
         IObservable<Beacon> Scan()
         {
             // TODO: switch to background scan
-            this.beaconScanner = this.beaconScanner ?? Observable
-                .Create<Beacon>(ob => this.adapter
-                    .Scan()
-                    .Subscribe(sr =>
-                    {
-                        var md = sr.AdvertisementData?.ManufacturerData;
-                        if (md != null && Beacon.IsIBeaconPacket(md))
-                        {
-                            var beacon = Beacon.Parse(md, sr.Rssi);
-                            ob.OnNext(beacon);
-                        }
-                    })
-                )
+            this.beaconScanner = this.beaconScanner ?? this.adapter
+                .Scan()
+                .Select(sr =>
+                {
+                    Beacon beacon = null;
+                    var md = sr.AdvertisementData?.ManufacturerData;
+                    if (md != null && Beacon.IsIBeaconPacket(md))
+                        beacon = Beacon.Parse(md, sr.Rssi);
+
+                    return beacon;
+                })
+                .Where(x => x != null)
                 .Publish()
                 .RefCount();
 
@@ -190,14 +177,17 @@ namespace Plugin.Beacons
             var key = region.ToString();
             BeaconRegionStatus status = null;
 
-            if (this.regionStates.ContainsKey(key))
+            lock (this.regionStates)
             {
-                status = this.regionStates[key];
-            }
-            else
-            {
-                status = new BeaconRegionStatus(region);
-                this.regionStates.Add(key, status);
+                if (this.regionStates.ContainsKey(key))
+                {
+                    status = this.regionStates[key];
+                }
+                else
+                {
+                    status = new BeaconRegionStatus(region);
+                    this.regionStates.Add(key, status);
+                }
             }
             return status;
         }
@@ -205,9 +195,11 @@ namespace Plugin.Beacons
 
         protected virtual IEnumerable<BeaconRegionStatus> GetRegionStatesForBeacon(IEnumerable<BeaconRegion> regionList, Beacon beacon)
         {
+            var copy = this.regionStates.ToDictionary(x => x.Key, x => x.Value);
+
             foreach (var region in regionList)
             {
-                var state = this.regionStates[region.ToString()];
+                var state = copy[region.ToString()];
                 if (state.Region.IsBeaconInRegion(beacon))
                     yield return state;
             }

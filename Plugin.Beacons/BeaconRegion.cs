@@ -4,14 +4,17 @@ using System;
 namespace Plugin.Beacons
 {
 
-    public class BeaconRegion
+    public class BeaconRegion : IEquatable<BeaconRegion>
     {
-        public BeaconRegion(string identifier, Guid uuid, ushort? major = null, ushort? minor = null)
+        public BeaconRegion(string identifier, Guid uuid, ushort? major = 0, ushort? minor = 0)
         {
             this.Identifier = identifier;
             this.Uuid = uuid;
-            this.Major = major;
-            this.Minor = minor;
+            if (major > 0)
+                this.Major = major;
+
+            if (minor > 0)
+                this.Minor = minor;
         }
 
 
@@ -19,6 +22,8 @@ namespace Plugin.Beacons
         public Guid Uuid { get; }
         public ushort? Major { get; }
         public ushort? Minor { get; }
+        //public bool NotifyOnEntry { get; set; } = true;
+        //public bool NotifyOnExit { get; set; } = true;
 
 
         public bool IsBeaconInRegion(Beacon beacon)
@@ -39,45 +44,11 @@ namespace Plugin.Beacons
         }
 
 
-        public override string ToString()
-            => $"[Identifier: {this.Identifier} - UUID: {this.Uuid} - Major: {this.Major ?? 0} - Minor: {this.Minor ?? 0}]";
-
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as BeaconRegion;
-            if (other == null)
-                return false;
-
-            if (ReferenceEquals(this, other))
-                return true;
-
-            if (this.Major != other.Major)
-                return false;
-
-            if (this.Minor != other.Minor)
-                return false;
-
-            if (this.Uuid != other.Uuid)
-                return false;
-
-            return true;
-        }
-
-
-        public override int GetHashCode()
-        {
-            var hash = this.Identifier.GetHashCode();
-            if (this.Uuid != null)
-                hash += this.Uuid.GetHashCode();
-
-            if (this.Major != null)
-                hash += this.Major.Value.GetHashCode();
-
-            if (this.Minor != null)
-                hash += this.Minor.Value.GetHashCode();
-
-            return hash;
-        }
+        public override string ToString() => $"[Identifier: {this.Identifier} - UUID: {this.Uuid} - Major: {this.Major ?? 0} - Minor: {this.Minor ?? 0}]";
+        public bool Equals(BeaconRegion other) => (this.Identifier, this.Uuid, this.Major, this.Minor) == (other.Identifier, other.Uuid, other.Major, other.Minor);
+        public static bool operator ==(BeaconRegion left, BeaconRegion right) => Equals(left, right);
+        public static bool operator !=(BeaconRegion left, BeaconRegion right) => !Equals(left, right);
+        public override bool Equals(object obj) => obj is BeaconRegion region && this.Equals(region);
+        public override int GetHashCode() => (this.Identifier, this.Uuid, this.Major, this.Minor).GetHashCode();
     }
 }

@@ -10,8 +10,9 @@ namespace Plugin.Beacons
         //void StartAdvertising(Beacon beacon);
         //void StopAdvertising();
 
+        //bool IsBluetoothAdapterReady { get; }
         IObservable<bool> RequestPermission();
-        IObservable<RangedBeaconResults> WhenBeaconsRanged(params BeaconRegion[] regions);
+        IObservable<Beacon> WhenBeaconRanged(BeaconRegion region);
 
         void StartMonitoring(BeaconRegion region);
         void StopMonitoring(BeaconRegion region);
