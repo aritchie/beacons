@@ -12,6 +12,8 @@ Scans for iBeacons
 |Android|4.3+|
 |Windows UWP|16299+|
 
+### [SUPPORT THIS PROJECT](https://github.com/aritchie/home)
+
 ## SETUP
 
 Install the following nuget package to all of your platform code and PCL/Core libraries

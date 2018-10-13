@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Disposables;
 using Prism.AppModel;
 using Prism.Navigation;
 using ReactiveUI;
@@ -10,6 +11,19 @@ namespace Sample
                                       IPageLifecycleAware,
                                       INavigatedAware
     {
+        CompositeDisposable disposer;
+        protected CompositeDisposable DisposeWith
+        {
+            get
+            {
+                if (this.disposer == null)
+                    this.disposer = new CompositeDisposable();
+
+                return this.disposer;
+            }
+        }
+
+
         public virtual void OnAppearing()
         {
         }
@@ -17,6 +31,8 @@ namespace Sample
 
         public virtual void OnDisappearing()
         {
+            this.disposer.Dispose();
+            this.disposer = null;
         }
 
 

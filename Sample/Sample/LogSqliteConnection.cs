@@ -17,6 +17,7 @@ namespace Sample
         public int? Major { get; set; }
         public int? Minor { get; set; }
         public bool Entered { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 
 

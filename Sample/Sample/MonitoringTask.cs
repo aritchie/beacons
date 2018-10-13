@@ -27,7 +27,8 @@ namespace Sample
                     Uuid = x.Region.Uuid,
                     Minor = x.Region.Minor,
                     Major = x.Region.Major,
-                    Entered = x.IsEntering
+                    Entered = x.IsEntering,
+                    CreatedOn = DateTime.UtcNow
                 }
             )
         );

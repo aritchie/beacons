@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reactive.Disposables;
 using Plugin.Beacons;
+using ReactiveUI.Fody.Helpers;
 
 
 namespace Sample
@@ -20,18 +23,23 @@ namespace Sample
         public override void OnAppearing()
         {
             base.OnAppearing();
-        }
-
-
-        public override void OnDisappearing()
-        {
-            base.OnDisappearing();
+            this.LoadData();
+            this.beaconManager
+                .WhenRegionStatusChanged()
+                .Subscribe(_ => this.LoadData())
+                .DisposeWith(this.DisposeWith);
         }
 
 
         void LoadData()
         {
-
+            this.Pings = this.conn
+                .Beacons
+                .OrderByDescending(x => x.CreatedOn)
+                .ToList();
         }
+
+
+        [Reactive] public IList<DbBeaconPing> Pings { get; private set; }
     }
 }
