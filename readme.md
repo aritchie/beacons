@@ -1,11 +1,13 @@
 # ACR Reactive Beacons Plugin for Xamarin & Windows
+_Scans for iBeacons_
 
-Scans for iBeacons
-
-[![NuGet](https://img.shields.io/nuget/v/Plugin.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Beacons/)
-[![Build status](https://allanritchie.visualstudio.com/Plugins/_apis/build/status/Beacons)](https://allanritchie.visualstudio.com/Plugins/_build/latest?definitionId=0)
+### [SUPPORT THIS PROJECT](https://github.com/aritchie/home)
 
 [Change Log](changelog.md)
+
+[![NuGet](https://img.shields.io/nuget/v/Plugin.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Beacons/)
+[![Build status](https://dev.azure.com/allanritchie/Plugins/_apis/build/status/Beacons)](https://dev.azure.com/allanritchie/Plugins/_build/latest?definitionId=0)
+
 
 |Platform|Version|
 |--------|-------|
@@ -13,13 +15,13 @@ Scans for iBeacons
 |Android|4.3+|
 |Windows UWP|16299+|
 
-### [SUPPORT THIS PROJECT](https://github.com/aritchie/home)
+
 
 ## SETUP
 
 Install the following nuget package to all of your platform code and PCL/Core libraries
 
-[![NuGet](https://img.shields.io/nuget/v/Plugins.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Acr.Ble/)
+[![NuGet](https://img.shields.io/nuget/v/Plugins.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Beacons/)
 
 **Android - add the following to your Android app manifest**
 ```xml
