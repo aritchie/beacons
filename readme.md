@@ -3,6 +3,7 @@
 Scans for iBeacons
 
 [![NuGet](https://img.shields.io/nuget/v/Plugin.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Beacons/)
+[![Build status](https://allanritchie.visualstudio.com/Plugins/_apis/build/status/Beacons)](https://allanritchie.visualstudio.com/Plugins/_build/latest?definitionId=0)
 
 [Change Log](changelog.md)
 
@@ -18,7 +19,7 @@ Scans for iBeacons
 
 Install the following nuget package to all of your platform code and PCL/Core libraries
 
-[![NuGet](https://img.shields.io/nuget/v/Acr.Ble.svg?maxAge=2592000)](https://www.nuget.org/packages/Acr.Ble/)
+[![NuGet](https://img.shields.io/nuget/v/Plugins.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Acr.Ble/)
 
 **Android - add the following to your Android app manifest**
 ```xml
