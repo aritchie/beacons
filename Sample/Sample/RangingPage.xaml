@@ -4,10 +4,6 @@
 	         x:Class="Sample.RangingPage"
 	         Title="Ranging">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{Binding ScanText}" Command="{Binding ScanToggle}" />
-    </ContentPage.ToolbarItems>
-
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
@@ -28,6 +24,9 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            <Button Text="{Binding ScanText}"
+                    Command="{Binding ToggleScan}"
+                    Grid.Row="2" />
         </Grid>
 	</ContentPage.Content>
 </ContentPage>

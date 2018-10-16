@@ -36,10 +36,6 @@ namespace Sample
             }));
             this.ScanToggle = ReactiveCommand.CreateFromTask(async _ =>
             {
-                var result = await beaconManager.RequestPermission();
-                if (!result)
-                    return;
-
                 if (this.ScanText == "Scan")
                     this.StartScan();
                 else
@@ -94,7 +90,8 @@ namespace Sample
 
         void StartScan()
         {
-            this.ScanText = "Scan";
+            this.ScanText = "Stop Scan";
+            this.Beacons.Clear();
 
             this.beaconManager
                 .RequestPermission()
