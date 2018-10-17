@@ -22,10 +22,8 @@
 	</array>
 	<key>MinimumOSVersion</key>
 	<string>11.2</string>
-	<key>CFBundleDisplayName</key>
-	<string>Sample</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.Sample</string>
+	<string>com.acrapps.beacons</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>CFBundleIconFiles</key>
@@ -50,5 +48,12 @@
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
 	<string>Sample</string>
+	<key>CFBundleDisplayName</key>
+	<string>Beacons</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+	</array>
 </dict>
 </plist>

@@ -31,17 +31,17 @@ namespace Sample
 
         public virtual void OnDisappearing()
         {
-            this.disposer.Dispose();
+            this.disposer?.Dispose();
             this.disposer = null;
         }
 
 
-        public virtual void OnNavigatedFrom(NavigationParameters parameters)
+        public virtual void OnNavigatedFrom(INavigationParameters parameters)
         {
         }
 
 
-        public virtual void OnNavigatedTo(NavigationParameters parameters)
+        public virtual void OnNavigatedTo(INavigationParameters parameters)
         {
         }
     }

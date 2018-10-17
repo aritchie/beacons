@@ -1,4 +1,5 @@
 ﻿using System;
+using Acr.UserDialogs;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -9,7 +10,7 @@ using Xamarin.Forms.Platform.Android;
 namespace Sample.Droid
 {
     [Activity(
-        Label = "Sample",
+        Label = "Beacons",
         Icon = "@drawable/icon",
         Theme = "@style/MainTheme",
         MainLauncher = true,

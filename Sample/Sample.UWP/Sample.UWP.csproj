@@ -151,6 +151,10 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.7" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Plugin.Beacons\Plugin.Beacons.csproj">
+      <Project>{87d5a064-b448-4928-bf17-41e37d971fc8}</Project>
+      <Name>Plugin.Beacons</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sample\Sample.csproj">
       <Project>{273BF9E1-1D66-42A8-8FC5-B80BE85F6583}</Project>
       <Name>Sample</Name>
