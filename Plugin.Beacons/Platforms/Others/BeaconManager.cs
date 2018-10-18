@@ -47,18 +47,7 @@ namespace Plugin.Beacons
 
 
         public IObservable<bool> RequestPermission() => Internals.HasPermission();
-
-
-        public IObservable<Beacon> WhenBeaconRanged(BeaconRegion region)
-        {
-            this.SetRegion(region);
-            return this.Scan()
-                .Where(region.IsBeaconInRegion)
-                .Finally(() =>
-                {
-                    // TODO: remove filter target
-                });
-        }
+        public IObservable<Beacon> WhenBeaconRanged(BeaconRegion region) => this.Scan().Where(region.IsBeaconInRegion);
 
 
         public void StartMonitoring(BeaconRegion region)
@@ -125,7 +114,7 @@ namespace Plugin.Beacons
 
 
         IObservable<Beacon> beaconScanner;
-        IObservable<Beacon> Scan()
+        protected IObservable<Beacon> Scan()
         {
             // TODO: switch to background scan
             this.beaconScanner = this.beaconScanner ?? this.adapter

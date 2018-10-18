@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using CoreLocation;
 
 
@@ -20,78 +18,20 @@ namespace Plugin.Beacons
         }
 
 
-        public IObservable<bool> RequestPermission()
-        {
-            //if (CLLocationManager.RegionMonitoringEnabled)
-            //CLLocationManager.RegionMonitoringAvailable
-            //CLLocationManager.IsRangingAvailable
-            //CLLocationManager.IsMonitoringAvailable(typeof(CLBeaconRegion))
- //if (LocationPermissionStatus != PermissionStatus.Unknown)
- //               return Task.FromResult(LocationPermissionStatus);
-
- //           if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
- //           {
- //               return Task.FromResult(PermissionStatus.Unknown);
- //           }
-
- //           if (locationManager == null)
- //               locationManager = new CLLocationManager();
-
- //           EventHandler<CLAuthorizationChangedEventArgs> authCallback = null;
- //           var tcs = new TaskCompletionSource<PermissionStatus>();
-
- //           authCallback = (sender, e) =>
- //               {
- //                   if(e.Status == CLAuthorizationStatus.NotDetermined)
- //                       return;
-
- //                   locationManager.AuthorizationChanged -= authCallback;
- //                   tcs.SetResult(LocationPermissionStatus);
- //               };
-
- //           locationManager.AuthorizationChanged += authCallback;
+        public IObservable<bool> RequestPermission() => Internals.HasPermission();
 
 
- //           var info = NSBundle.MainBundle.InfoDictionary;
- //           if (info.ContainsKey(new NSString("NSLocationWhenInUseUsageDescription")))
- //               locationManager.RequestWhenInUseAuthorization();
- //           else if (info.ContainsKey(new NSString("NSLocationAlwaysUsageDescription")))
- //               locationManager.RequestAlwaysAuthorization();
- //           else
- //               throw new UnauthorizedAccessException("On iOS 8.0 and higher you must set either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in your Info.plist file to enable Authorization Requests for Location updates!");
-
-
- //           return tcs.Task;
-            return Observable.Return(true);
-        }
-
-
-        public IObservable<Beacon> WhenBeaconRanged(BeaconRegion region) => Observable.Create<Beacon>(ob =>
+        public IObservable<Beacon> WhenBeaconRanged(BeaconRegion region)
         {
             var nativeRegion = this.ToNative(region);
             this.manager.StartRangingBeacons(nativeRegion);
 
-            var handler = new EventHandler<CLRegionBeaconsRangedEventArgs>((sender, args) =>
-            {
-                foreach (var native in args.Beacons)
-                {
-                    ob.OnNext(new Beacon
-                    (
-                        native.ProximityUuid.FromNative(),
-                        native.Major.UInt16Value,
-                        native.Minor.UInt16Value,
-                        native.Accuracy,
-                        this.FromNative(native.Proximity)
-                    ));
-                }
-            });
-            this.manager.DidRangeBeacons += handler;
-            return () =>
-            {
-                this.manager.StopRangingBeacons(nativeRegion);
-                this.manager.DidRangeBeacons -= handler;
-            };
-        });
+            return this.Scan()
+                .Where(region.IsBeaconInRegion)
+                .Finally(() =>
+                    this.manager.StopRangingBeacons(nativeRegion)
+                );
+        }
 
 
         public void StartMonitoring(BeaconRegion region)
@@ -121,36 +61,59 @@ namespace Plugin.Beacons
 
 
         public IReadOnlyList<BeaconRegion> MonitoredRegions => this
-               .manager
-               .MonitoredRegions
-               .OfType<CLBeaconRegion>()
-               .Select(this.FromNative)
-               .ToList();
+           .manager
+           .MonitoredRegions
+           .OfType<CLBeaconRegion>()
+           .Select(this.FromNative)
+           .ToList();
 
 
-        public IObservable<BeaconRegionStatusChanged> WhenRegionStatusChanged()
+        public IObservable<BeaconRegionStatusChanged> WhenRegionStatusChanged() => Observable.Create<BeaconRegionStatusChanged>(ob =>
         {
-            return Observable.Create<BeaconRegionStatusChanged>(ob =>
+            var enterHandler = this.CreateHandler(ob, true);
+            var leftHandler = this.CreateHandler(ob, false);
+
+            this.manager.RegionEntered += enterHandler;
+            this.manager.RegionLeft += leftHandler;
+
+            return () =>
             {
-                var enterHandler = this.CreateHandler(ob, true);
-                var leftHandler = this.CreateHandler(ob, false);
+                this.manager.RegionEntered -= enterHandler;
+                this.manager.RegionLeft -= leftHandler;
+            };
+        });
 
-                this.manager.RegionEntered += enterHandler;
-                this.manager.RegionLeft += leftHandler;
 
-                return () =>
+        IObservable<Beacon> beaconScanner;
+        protected IObservable<Beacon> Scan()
+        {
+            this.beaconScanner = this.beaconScanner ?? Observable.Create<Beacon>(ob =>
+            {
+                var handler = new EventHandler<CLRegionBeaconsRangedEventArgs>((sender, args) =>
                 {
-                    this.manager.RegionEntered -= enterHandler;
-                    this.manager.RegionLeft -= leftHandler;
-                };
-            });
+                    foreach (var native in args.Beacons)
+                    {
+                        ob.OnNext(new Beacon
+                        (
+                            native.ProximityUuid.FromNative(),
+                            native.Major.UInt16Value,
+                            native.Minor.UInt16Value,
+                            native.Accuracy,
+                            this.FromNative(native.Proximity)
+                        ));
+                    }
+                });
+                this.manager.DidRangeBeacons += handler;
+                return () => this.manager.DidRangeBeacons -= handler;
+            })
+            .Publish()
+            .RefCount();
+
+            return this.beaconScanner;
         }
 
-
-
         protected EventHandler<CLRegionEventArgs> CreateHandler(IObserver<BeaconRegionStatusChanged> ob, bool entering)
-        {
-            return (sender, args) =>
+            => (sender, args) =>
             {
                 var br = args.Region as CLBeaconRegion;
                 if (br != null)
@@ -160,18 +123,15 @@ namespace Plugin.Beacons
                     ob.OnNext(status);
                 }
             };
-        }
 
 
         protected BeaconRegion FromNative(CLBeaconRegion region)
-        {
-            return new BeaconRegion(
+            => new BeaconRegion(
                 region.Identifier,
                 region.ProximityUuid.FromNative(),
                 region.Major?.UInt16Value,
                 region.Minor?.UInt16Value
             );
-        }
 
 
         protected CLBeaconRegion ToNative(BeaconRegion region)
