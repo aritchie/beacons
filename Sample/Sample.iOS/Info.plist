@@ -48,6 +48,12 @@
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
 	<string>Sample</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>We are scanning for beacons yo!</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>We are scanning for beacons yo!</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We are scanning for beacons yo!</string>
 	<key>CFBundleDisplayName</key>
 	<string>Beacons</string>
 	<key>UIBackgroundModes</key>
