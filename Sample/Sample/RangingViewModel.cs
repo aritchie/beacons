@@ -27,7 +27,6 @@ namespace Sample
         {
             this.dialogs = dialogs;
             this.beaconManager = beaconManager;
-            this.region = new BeaconRegion("estimote", new Guid("B9407F30-F5F8-466E-AFF9-25556B57FE6D"));
 
             this.Clear = ReactiveCommand.Create(() => this.Beacons.Clear());
             this.SetRegion = ReactiveCommand.CreateFromTask(_ => navigationService.NavigateAsync("CreatePage", new NavigationParameters
@@ -44,9 +43,8 @@ namespace Sample
         }
 
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        public override void OnNavigatingTo(INavigationParameters parameters)
         {
-            base.OnNavigatedTo(parameters);
             var currentRegion = parameters.GetValue<BeaconRegion>(nameof(BeaconRegion));
             if (currentRegion != null)
             {

@@ -14,11 +14,36 @@ namespace Sample
         {
             this.Title = "Create Region";
 
+            this.EstimoteDefaults = ReactiveCommand.Create(() =>
+            {
+                this.Identifier = "Estimote";
+                this.Uuid = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+            });
+
             this.Create = ReactiveCommand.CreateFromTask(
-                _ => navigationService.GoBackAsync(new NavigationParameters
+                _ =>
                 {
-                    { nameof(BeaconRegion), new BeaconRegion(this.Identifier, Guid.Parse(this.Uuid), this.Major, this.Minor)}
-                }),
+                    ushort? major = null;
+                    ushort? minor = null;
+                    if (this.Major > 0)
+                        major = this.Major;
+
+                    if (this.Minor > 0)
+                        minor = this.Minor;
+
+                    return navigationService.GoBackAsync(new NavigationParameters
+                    {
+                        {
+                            nameof(BeaconRegion),
+                            new BeaconRegion(
+                                this.Identifier,
+                                Guid.Parse(this.Uuid),
+                                major,
+                                minor
+                            )
+                        }
+                    });
+                },
                 this.WhenAny(
                     x => x.Identifier,
                     x => x.Uuid,
@@ -41,8 +66,8 @@ namespace Sample
                             return false;
 
                         // if using minor, must have major
-                        if (Mv == 0 || mv > 0)
-                            return false;
+                        //if (Mv == 0 || mv > 0)
+                        //    return false;
 
                         return true;
                     }
@@ -51,7 +76,17 @@ namespace Sample
         }
 
 
+        public override void OnNavigatingTo(INavigationParameters parameters)
+        {
+            var forMonitoring = parameters.GetValue<bool>("Monitoring");
+            this.Title = forMonitoring
+                ? "Create Monitoring Region"
+                : "Create Ranging Region";
+        }
+
+
         public ICommand Create { get; }
+        public ICommand EstimoteDefaults { get; }
         [Reactive] public string Title { get; private set; }
         [Reactive] public string Identifier { get; set; }
         [Reactive] public string Uuid { get; set; }

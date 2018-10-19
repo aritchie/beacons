@@ -11,8 +11,9 @@ namespace Plugin.Beacons
 
         public static IObservable<bool> HasPermission() => Observable.FromAsync(async _ =>
         {
-            var values = await CrossPermissions.Current.RequestPermissionsAsync(Permission.LocationAlways);
-            return values[Permission.LocationAlways] == PermissionStatus.Granted;
+            var values = await CrossPermissions.Current.RequestPermissionsAsync(Permission.Location);
+            //var values = await CrossPermissions.Current.RequestPermissionsAsync(Permission.LocationAlways);
+            return values[Permission.Location] == PermissionStatus.Granted;
         });
     }
 }

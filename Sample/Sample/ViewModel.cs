@@ -9,7 +9,7 @@ namespace Sample
 {
     public abstract class ViewModel : ReactiveObject,
                                       IPageLifecycleAware,
-                                      INavigatedAware
+                                      INavigatingAware
     {
         CompositeDisposable disposer;
         protected CompositeDisposable DisposeWith
@@ -36,12 +36,12 @@ namespace Sample
         }
 
 
-        public virtual void OnNavigatedFrom(INavigationParameters parameters)
+        public virtual void OnNavigatingFrom(INavigationParameters parameters)
         {
         }
 
 
-        public virtual void OnNavigatedTo(INavigationParameters parameters)
+        public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
         }
     }

@@ -15,6 +15,10 @@
             <TableSection>
                 <TextCell Text="Create" Command="{Binding Create}" />
             </TableSection>
+
+            <TableSection>
+                <TextCell Text="Estimote Defaults" Command="{Binding EstimoteDefaults}" />
+            </TableSection>
         </TableView>
     </ContentPage.Content>
 </ContentPage>

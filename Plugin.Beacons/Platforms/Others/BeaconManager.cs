@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Plugin.BluetoothLE;
 
 
@@ -12,6 +13,8 @@ namespace Plugin.Beacons
         readonly IAdapter adapter;
         readonly IPluginRepository repository;
         readonly IDictionary<string, BeaconRegionStatus> regionStates;
+        readonly Subject<BeaconRegionStatusChanged> monitorSubject;
+        IDisposable monitorScan;
 
         /*
          *  if (this.AdvertisedBeacon != null)
@@ -39,6 +42,8 @@ namespace Plugin.Beacons
         {
             this.adapter = adapter ?? CrossBleAdapter.Current;
             this.repository = repository ?? new SqlitePluginRepository();
+
+            this.monitorSubject = new Subject<BeaconRegionStatusChanged>();
             this.regionStates = new Dictionary<string, BeaconRegionStatus>();
             var regions = this.repository.GetTrackingRegions();
             foreach (var region in regions)
@@ -46,8 +51,10 @@ namespace Plugin.Beacons
         }
 
 
+        public IReadOnlyList<BeaconRegion> MonitoredRegions => this.regionStates.Values.Select(x => x.Region).ToList();
         public IObservable<bool> RequestPermission() => Internals.HasPermission();
         public IObservable<Beacon> WhenBeaconRanged(BeaconRegion region) => this.Scan().Where(region.IsBeaconInRegion);
+        public IObservable<BeaconRegionStatusChanged> WhenRegionStatusChanged() => this.monitorSubject;
 
 
         public void StartMonitoring(BeaconRegion region)
@@ -62,26 +69,30 @@ namespace Plugin.Beacons
             this.repository.StopMonitoring(region);
             lock (this.regionStates)
                 this.regionStates.Remove(region.Identifier);
+
+            if (this.regionStates.Count == 0)
+                this.CleanupMonitoringScanner();
         }
 
 
         public void StopAllMonitoring()
         {
+            this.CleanupMonitoringScanner();
+
             this.repository.StopAllMonitoring();
             lock (this.regionStates)
                 this.regionStates.Clear();
         }
 
 
-        public IReadOnlyList<BeaconRegion> MonitoredRegions => this.regionStates.Values.Select(x => x.Region).ToList();
-
-
-        IObservable<BeaconRegionStatusChanged> regionOb;
-        public IObservable<BeaconRegionStatusChanged> WhenRegionStatusChanged()
+        protected void TryStartMonitorScanner()
         {
-            this.regionOb = this.regionOb ?? Observable.Create<BeaconRegionStatusChanged>(ob =>
+            if (this.monitorScan != null)
+                return;
+
+            this.monitorScan = Observable.Create<BeaconRegionStatusChanged>(ob =>
             {
-                var scan = this.Scan()
+                var internalScan = this.Scan()
                     .Where(_ => this.regionStates.Count > 0)
                     .Subscribe(beacon =>
                     {
@@ -92,50 +103,42 @@ namespace Plugin.Beacons
                             {
                                 ob.OnNext(new BeaconRegionStatusChanged(state.Region, true));
                             }
+
                             state.IsInRange = true;
                             state.LastPing = DateTimeOffset.UtcNow;
                         }
                     });
 
-                    var cleanup = this
-                        .WhenRegionExited()
-                        .Subscribe(ob.OnNext);
+                var cleanup = Observable
+                    .Interval(TimeSpan.FromSeconds(5)) // TODO: configurable
+                    .Subscribe(x =>
+                    {
+                        var maxAge = DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(5));
+
+                        foreach (var state in this.regionStates.Values)
+                        {
+                            if (state.IsInRange == true && state.LastPing > maxAge)
+                            {
+                                state.IsInRange = false;
+                                ob.OnNext(new BeaconRegionStatusChanged(state.Region, false));
+                            }
+                        }
+                    });
 
                 return () =>
                 {
-                    scan.Dispose();
+                    internalScan.Dispose();
                     cleanup.Dispose();
                 };
             })
-            .Publish()
-            .RefCount();
-
-            return this.regionOb;
+            .Subscribe(this.monitorSubject.OnNext);
         }
 
 
-        IObservable<BeaconRegionStatusChanged> regionExitOb;
-        protected virtual IObservable<BeaconRegionStatusChanged> WhenRegionExited()
+        protected void CleanupMonitoringScanner()
         {
-            this.regionExitOb = this.regionExitOb ?? Observable.Create<BeaconRegionStatusChanged>(ob => Observable
-                .Interval(TimeSpan.FromSeconds(5)) // TODO: configurable
-                .Subscribe(x =>
-                {
-                    var maxAge = DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(5));
-
-                    foreach (var state in this.regionStates.Values)
-                    {
-                        if (state.IsInRange == true && state.LastPing > maxAge)
-                        {
-                            state.IsInRange = false;
-                            ob.OnNext(new BeaconRegionStatusChanged(state.Region, false));
-                        }
-                    }
-                })
-            )
-            .Publish()
-            .RefCount();
-            return this.regionExitOb;
+            this.monitorScan?.Dispose();
+            this.monitorScan = null;
         }
 
 
@@ -179,6 +182,7 @@ namespace Plugin.Beacons
                     this.regionStates.Add(key, status);
                 }
             }
+            this.TryStartMonitorScanner();
             return status;
         }
 
