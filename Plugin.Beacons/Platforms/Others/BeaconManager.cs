@@ -52,14 +52,14 @@ namespace Plugin.Beacons
 
         public void StartMonitoring(BeaconRegion region)
         {
-            this.repository.StartTracking(region);
+            this.repository.StartMonitoring(region);
             this.SetRegion(region);
         }
 
 
         public void StopMonitoring(BeaconRegion region)
         {
-            this.repository.StopTracking(region);
+            this.repository.StopMonitoring(region);
             lock (this.regionStates)
                 this.regionStates.Remove(region.Identifier);
         }
@@ -67,13 +67,13 @@ namespace Plugin.Beacons
 
         public void StopAllMonitoring()
         {
-            this.repository.StopAllTracking();
+            this.repository.StopAllMonitoring();
             lock (this.regionStates)
                 this.regionStates.Clear();
         }
 
 
-        public IReadOnlyList<BeaconRegion> MonitoredRegions { get; }
+        public IReadOnlyList<BeaconRegion> MonitoredRegions => this.regionStates.Values.Select(x => x.Region).ToList();
 
 
         IObservable<BeaconRegionStatusChanged> regionOb;
@@ -82,6 +82,7 @@ namespace Plugin.Beacons
             this.regionOb = this.regionOb ?? Observable.Create<BeaconRegionStatusChanged>(ob =>
             {
                 var scan = this.Scan()
+                    .Where(_ => this.regionStates.Count > 0)
                     .Subscribe(beacon =>
                     {
                         var states = this.GetRegionStatesForBeacon(this.MonitoredRegions, beacon);
@@ -113,29 +114,6 @@ namespace Plugin.Beacons
         }
 
 
-        IObservable<Beacon> beaconScanner;
-        protected IObservable<Beacon> Scan()
-        {
-            // TODO: switch to background scan
-            this.beaconScanner = this.beaconScanner ?? this.adapter
-                .Scan()
-                .Select(sr =>
-                {
-                    Beacon beacon = null;
-                    var md = sr.AdvertisementData?.ManufacturerData;
-                    if (md != null && Beacon.IsIBeaconPacket(md))
-                        beacon = Beacon.Parse(md, sr.Rssi);
-
-                    return beacon;
-                })
-                .Where(x => x != null)
-                .Publish()
-                .RefCount();
-
-            return this.beaconScanner;
-        }
-
-
         IObservable<BeaconRegionStatusChanged> regionExitOb;
         protected virtual IObservable<BeaconRegionStatusChanged> WhenRegionExited()
         {
@@ -158,6 +136,29 @@ namespace Plugin.Beacons
             .Publish()
             .RefCount();
             return this.regionExitOb;
+        }
+
+
+        IObservable<Beacon> beaconScanner;
+        protected IObservable<Beacon> Scan()
+        {
+            // TODO: switch to background scan
+            this.beaconScanner = this.beaconScanner ?? this.adapter
+                .Scan()
+                .Select(sr =>
+                {
+                    Beacon beacon = null;
+                    var md = sr.AdvertisementData?.ManufacturerData;
+                    if (md != null && Beacon.IsIBeaconPacket(md))
+                        beacon = Beacon.Parse(md, sr.Rssi);
+
+                    return beacon;
+                })
+                .Where(x => x != null)
+                .Publish()
+                .RefCount();
+
+            return this.beaconScanner;
         }
 
 

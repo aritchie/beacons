@@ -19,6 +19,7 @@ namespace Plugin.Beacons
                 new SQLiteConnectionString(Path.Combine(FileSystem.Current.AppData.FullName, "beaconplugin.db"), true, null),
                 SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex
             );
+            this.conn.CreateTable<DbBeaconRegion>();
         }
 
 
@@ -32,15 +33,15 @@ namespace Plugin.Beacons
             ));
 
 
-        public void StartTracking(BeaconRegion region) => this.conn.Insert(new DbBeaconRegion
+        public void StartMonitoring(BeaconRegion region) => this.conn.Insert(new DbBeaconRegion
         {
             Identifier = region.Identifier,
             Uuid = region.Uuid,
             Major = region.Major,
             Minor = region.Minor
         });
-        public void StopTracking(BeaconRegion region) => this.conn.Delete(region.Identifier);
-        public void StopAllTracking() => this.conn.DeleteAll<DbBeaconRegion>();
+        public void StopMonitoring(BeaconRegion region) => this.conn.Delete(region.Identifier);
+        public void StopAllMonitoring() => this.conn.DeleteAll<DbBeaconRegion>();
     }
 
 

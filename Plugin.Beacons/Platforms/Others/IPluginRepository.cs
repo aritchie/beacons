@@ -7,8 +7,8 @@ namespace Plugin.Beacons
     public interface IPluginRepository
     {
         IEnumerable<BeaconRegion> GetTrackingRegions();
-        void StartTracking(BeaconRegion region);
-        void StopTracking(BeaconRegion region);
-        void StopAllTracking();
+        void StartMonitoring(BeaconRegion region);
+        void StopMonitoring(BeaconRegion region);
+        void StopAllMonitoring();
     }
 }
