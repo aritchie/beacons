@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
@@ -31,9 +30,10 @@ namespace Sample
             this.Clear = ReactiveCommand.Create(() => this.Beacons.Clear());
             this.SetRegion = ReactiveCommand.CreateFromTask(_ => navigationService.NavigateAsync("CreatePage", new NavigationParameters
             {
-                { nameof(BeaconRegion), this.region }
+                { nameof(BeaconRegion), this.region },
+                { "IsRanging", true }
             }));
-            this.ScanToggle = ReactiveCommand.CreateFromTask(async _ =>
+            this.ScanToggle = ReactiveCommand.Create(() =>
             {
                 if (this.ScanText == "Scan")
                     this.StartScan();

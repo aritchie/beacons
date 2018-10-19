@@ -82,6 +82,15 @@ namespace Sample
             this.Title = forMonitoring
                 ? "Create Monitoring Region"
                 : "Create Ranging Region";
+
+            var current = parameters.GetValue<BeaconRegion>(nameof(BeaconRegion));
+            if (current != null)
+            {
+                this.Identifier = current.Identifier;
+                this.Uuid = current.Uuid.ToString();
+                this.Major = current.Major ?? 0;
+                this.Minor = current.Minor ?? 0;
+            }
         }
 
 

@@ -9,7 +9,7 @@
         <LangVersion>latest</LangVersion>
         <Description>ACR iBeacon Plugin for Xamarin and Windows</Description>
         <Product>Plugin.Beacons ($(TargetFramework))</Product>
-        <Version>1.0.0</Version>
+        <Version>1.0.0-beta1</Version>
         <PackageProjectUrl>https://github.com/aritchie/beacons</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/aritchie/beacons/blob/master/LICENSE.md</PackageLicenseUrl>
         <PackageIconUrl>https://github.com/aritchie/beacons/raw/master/icon.png</PackageIconUrl>
