@@ -8,14 +8,18 @@ _Scans for iBeacons_
 [![NuGet](https://img.shields.io/nuget/v/Plugin.Beacons.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Beacons/)
 [![Build status](https://dev.azure.com/allanritchie/Plugins/_apis/build/status/Beacons)](https://dev.azure.com/allanritchie/Plugins/_build/latest?definitionId=0)
 
-
+## PLATFORMS
 |Platform|Version|
 |--------|-------|
 |iOS|8+|
 |Android|4.3+|
 |Windows UWP|16299+|
 
-
+## FEATURES
+* 100% Managed Code
+* Range Beacons
+* Monitor for beacon regions in the background
+* Complete RX based API
 
 ## SETUP
 
@@ -52,22 +56,53 @@ _Add the following for iBeacon background scanning_
 
 ## HOW TO USE
 
+### Request Permissions
+```csharp
+var result = await CrossBeacons.Current.RequestPermission();
+```
+
 ### Ranging for Beacons
 
-var scanner = CrossBeacons.Current.Scan().Subscribe(scanResult => {
-    // do something with it
-});
+```csharp
 
-scanner.Dispose(); // to stop scanning
+var scanner = CrossBeacons
+    .Current
+    .WhenBeaconRanged(new BeaconRegion 
+    (
+        Identifier = "Whatever",
+        Uuid = <Valid Guid>,
+        Major = 1-65535, // optional
+        Minor = 1-65535  // optional
+    ))
+    .Subscribe(scanResult => 
+    {
+        // do something with it - FYI: this will not be on the main thread, so if you are displaying to the UI, make sure to invoke on it
+    });
+// NOTE: you can range multiple regions, but you will have to merge in another call to the BeaconManager
+
+scanner.Dispose(); // to stop scanning    
+```
 
 ### Background Monitoring for Beacons
 
-Once you have successfully scanned for a device, use the instance
-
-    Device.WhenServicesDiscovered().Subscribe(service => 
+```csharp
+CrossBeacons
+    .Current
+    .WhenRegionStatusChanged()
+    .Subscribe(regionArgs => 
     {
-        service.W
+        regionArgs.IsEntering
+        regionArgs.Region // your register
     });
+
+CrossBeacons.Current.StartMonitoring(new BeaconRegion(...));
+
+// To stop monitoring
+CrossBeacons.Current.StopMonitoring(YourBeaconRegion);
+// OR
+CrossBeacons.Current.StopAllMonitoring();
+
+```
 
 ## FAQ
 Q) Why is everything reactive instead of events/async
@@ -81,3 +116,8 @@ Q) How many region configurations can I scan for at a time.
 
 Q) Can I scan for Eddystones with this library
 > No, as the title of this library says, it is currently for iBeacons only!
+
+## ROADMAP
+
+* Beacon Advertising
+* Beacon Region registration can setup prefilters for notifying on entry and/or exit

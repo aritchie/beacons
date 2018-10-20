@@ -5,16 +5,32 @@
 	x:Class="Sample.MonitoringPage"
     Title="Monitoring">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding Add}" />
+    </ContentPage.ToolbarItems>
+
 	<ContentPage.Content>
-        <ListView ItemsSource="{Binding List}"
-                  IsRefreshing="{Binding IsRefreshing}"
-                  RefreshCommand="{Binding Refresh}"
-                  IsPullToRefreshEnabled="true">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding Information}" Detail="{Binding Details}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ListView ItemsSource="{Binding Regions}" Grid.Row="0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Text}" Detail="{Binding Detail}">
+                            <TextCell.ContextActions>
+                                <MenuItem Text="Remove" Command="{Binding Remove}" />
+                            </TextCell.ContextActions>
+                        </TextCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button Text="Stop All Monitoring"
+                    Command="{Binding StopAllMonitoring}"
+                    Grid.Row="1"/>
+        </Grid>
 	</ContentPage.Content>
 </ContentPage>

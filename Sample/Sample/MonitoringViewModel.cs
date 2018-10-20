@@ -1,76 +1,85 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
+using Acr.UserDialogs;
 using Plugin.Beacons;
 using Prism.Navigation;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 
 namespace Sample
 {
     public class MonitoringViewModel : ViewModel
     {
-        readonly INavigationService navigationService;
         readonly IBeaconManager beaconManager;
 
 
-        public MonitoringViewModel(INavigationService navigationService, IBeaconManager beaconManager)
+        public MonitoringViewModel(INavigationService navigationService,
+                                   IUserDialogs dialogs,
+                                   IBeaconManager beaconManager)
         {
-            this.navigationService = navigationService;
             this.beaconManager = beaconManager;
+
+            this.Add = ReactiveCommand.CreateFromTask(() => navigationService.NavigateAsync(
+                "Create",
+                new NavigationParameters
+                {
+                    { "Monitoring", true }
+                }
+            ));
+
+            this.StopAllMonitoring = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var result = await dialogs.ConfirmAsync("Are you sure you wish to stop all monitoring");
+                if (result)
+                {
+                    this.beaconManager.StopAllMonitoring();
+                    this.LoadData();
+                }
+            });
         }
 
 
+        public ICommand Add { get; }
         public ICommand StopAllMonitoring { get; }
-
-        //        public MonitorViewModel(ICoreServices services) : base(services)
-        //        {
-        //            this.Refresh = ReactiveCommand.Create(() =>
-        //            {
-        //                this.IsRefreshing = true;
-        //                this.LoadData();
-        //                this.IsRefreshing = false;
-        //            });
-        //            this.WhenAnyValue(x => x.IsMonitoringEnabled)
-        //                .Subscribe(async enabled =>
-        //                {
-        //                    var result = await this.Core.AssertLocationPermission();
-        //                    if (!result)
-        //                        return;
-
-        //                    this.BeaconManager.StopAllMonitoring();
-        //                    if (enabled)
-        //                    {
-        //                        this.BeaconManager.StartMonitoring(new BeaconRegion("estimote", new Guid("B9407F30-F5F8-466E-AFF9-25556B57FE6D")));
-        //                    }
-        //                });
-        //        }
+        [Reactive] public IList<ItemViewModel> Regions { get; private set; }
 
 
-        //        public override void OnActivate()
-        //        {
-        //            base.OnActivate();
-        //            this.LoadData();
-        //        }
+        public override void OnAppearing()
+        {
+            this.LoadData();
+        }
 
 
-        //        void LoadData()
-        //        {
-        //            Task.Delay(500)
-        //                .ContinueWith(_ =>
-        //                {
-        //                    this.List = this
-        //                        .SqlConnection
-        //                        .BeaconPings
-        //                        .OrderByDescending(x => x.DateCreated)
-        //                        .Select(x => new MonitoredViewModel(x))
-        //                        .ToList();
-        //                });
-        //        }
+        public override void OnNavigatingTo(INavigationParameters parameters)
+        {
+            base.OnNavigatingFrom(parameters);
+            var newRegion = parameters.GetValue<BeaconRegion>(nameof(BeaconRegion));
+            if (newRegion != null)
+            {
+                this.beaconManager.StartMonitoring(newRegion);
+                this.LoadData();
+            }
+        }
 
 
-        //        public ICommand Refresh { get; }
-
-        //        [Reactive] public bool IsRefreshing { get; private set; }
-        //        [Reactive] public IList<MonitoredViewModel> List { get; private set; }
-        //        [Reactive] public bool IsMonitoringEnabled { get; set; }
+        void LoadData()
+        {
+            this.Regions = this.beaconManager
+                .MonitoredRegions
+                .Select(x => new ItemViewModel
+                {
+                    Text = $"{x.Identifier}",
+                    Detail = $"{x.Uuid}/{x.Major ?? 0}/{x.Minor ?? 0}",
+                    Command = ReactiveCommand.Create(() =>
+                    {
+                        this.beaconManager.StopMonitoring(x);
+                        this.LoadData();
+                    })
+                })
+                .ToList();
+        }
     }
 }

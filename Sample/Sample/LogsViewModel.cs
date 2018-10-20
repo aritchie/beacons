@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Disposables;
+using System.Windows.Input;
+using Acr.UserDialogs;
 using Plugin.Beacons;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 
@@ -13,11 +16,27 @@ namespace Sample
         readonly LogSqliteConnection conn;
 
 
-        public LogsViewModel(IBeaconManager beaconManager, LogSqliteConnection conn)
+        public LogsViewModel(IBeaconManager beaconManager,
+                             IUserDialogs dialogs,
+                             LogSqliteConnection conn)
         {
             this.beaconManager = beaconManager;
             this.conn = conn;
+
+            this.Purge = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var result = await dialogs.ConfirmAsync("Are you sure you wish to purge all logs?");
+                if (result)
+                {
+                    this.conn.DeleteAll<DbBeaconPing>();
+                    this.LoadData();
+                }
+            });
         }
+
+
+        public ICommand Purge { get; }
+        [Reactive] public IList<DbBeaconPing> Pings { get; private set; }
 
 
         public override void OnAppearing()
@@ -38,8 +57,5 @@ namespace Sample
                 .OrderByDescending(x => x.CreatedOn)
                 .ToList();
         }
-
-
-        [Reactive] public IList<DbBeaconPing> Pings { get; private set; }
     }
 }

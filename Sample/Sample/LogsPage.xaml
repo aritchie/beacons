@@ -4,8 +4,51 @@
              x:Class="Sample.LogsPage"
              Title="Logs">
     <ContentPage.Content>
-        <ListView ItemsSource="{Binding Logs}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        </ListView>
+            <ListView ItemsSource="{Binding Pings}" RowHeight="300">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Label Style="{StaticResource ListItemTextStyle}">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <FormattedString.Spans>
+                                                <Span Text="{Binding Entered, StringFormat='Entered: {0} '}" />
+                                                <Span Text="{Binding Identifier}" />
+                                                <Span Text=" @ " />
+                                                <Span Text="{Binding CreatedOn, StringFormat='{0:ddd MMM d, h:m:ss tt}'}" />
+                                            </FormattedString.Spans>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Style="{StaticResource ListItemDetailTextStyle}">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <FormattedString.Spans>
+                                                <Span Text="{Binding Uuid}" />
+                                                <Span Text=" / " />
+                                                <Span Text="{Binding Major}" />
+                                                <Span Text=" / " />
+                                                <Span Text="{Binding Minor}" />
+                                            </FormattedString.Spans>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button Text="Purge Logs"
+                    Command="{Binding Purge}"
+                    Grid.Row="1" />
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
