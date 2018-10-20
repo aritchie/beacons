@@ -22,12 +22,9 @@ namespace Sample
         {
             this.beaconManager = beaconManager;
 
-            this.Add = ReactiveCommand.CreateFromTask(() => navigationService.NavigateAsync(
-                "Create",
-                new NavigationParameters
-                {
-                    { "Monitoring", true }
-                }
+            this.Add = ReactiveCommand.CreateFromTask(() => navigationService.Navigate(
+                nameof(CreatePage),
+                ("Monitoring", true)
             ));
 
             this.StopAllMonitoring = ReactiveCommand.CreateFromTask(async () =>

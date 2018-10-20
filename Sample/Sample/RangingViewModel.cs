@@ -28,11 +28,11 @@ namespace Sample
             this.beaconManager = beaconManager;
 
             this.Clear = ReactiveCommand.Create(() => this.Beacons.Clear());
-            this.SetRegion = ReactiveCommand.CreateFromTask(_ => navigationService.NavigateAsync("CreatePage", new NavigationParameters
-            {
-                { nameof(BeaconRegion), this.region },
-                { "IsRanging", true }
-            }));
+            this.SetRegion = ReactiveCommand.CreateFromTask(_ => navigationService.Navigate(
+                nameof(CreatePage),
+                (nameof(BeaconRegion), this.region),
+                ("IsRanging", true)
+            ));
             this.ScanToggle = ReactiveCommand.Create(() =>
             {
                 if (this.ScanText == "Scan")
@@ -123,6 +123,7 @@ namespace Sample
         {
             this.ScanText = "Scan";
             this.scanner?.Dispose();
+            this.scanner = null;
         }
     }
 }
