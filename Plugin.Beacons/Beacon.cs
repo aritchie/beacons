@@ -117,6 +117,9 @@ namespace Plugin.Beacons
 
         public static bool IsIBeaconPacket(byte[] data)
         {
+            if (data == null)
+                return false;
+
             if (data.Length < 25)
                 return false;
 

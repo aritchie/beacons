@@ -148,16 +148,8 @@ namespace Plugin.Beacons
             // TODO: switch to background scan
             this.beaconScanner = this.beaconScanner ?? this.adapter
                 .Scan()
-                .Select(sr =>
-                {
-                    Beacon beacon = null;
-                    var md = sr.AdvertisementData?.ManufacturerData;
-                    if (md != null && Beacon.IsIBeaconPacket(md))
-                        beacon = Beacon.Parse(md, sr.Rssi);
-
-                    return beacon;
-                })
-                .Where(x => x != null)
+                .Where(x => Beacon.IsIBeaconPacket(x.AdvertisementData?.ManufacturerData))
+                .Select(x => Beacon.Parse(x.AdvertisementData.ManufacturerData, x.Rssi))
                 .Publish()
                 .RefCount();
 
