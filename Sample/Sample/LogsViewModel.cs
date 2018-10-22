@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows.Input;
 using Acr.UserDialogs;
@@ -54,6 +55,16 @@ namespace Sample
         {
             this.Pings = this.conn
                 .Beacons
+                .Select(x => new DbBeaconPing
+                {
+                    Id = x.Id,
+                    Identifier = x.Identifier,
+                    Entered = x.Entered,
+                    Uuid = x.Uuid,
+                    Major = x.Major,
+                    Minor = x.Minor,
+                    CreatedOn = x.CreatedOn.ToLocalTime()
+                })
                 .OrderByDescending(x => x.CreatedOn)
                 .ToList();
         }

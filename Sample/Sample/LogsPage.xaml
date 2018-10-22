@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Sample.LogsPage"
              Title="Logs">
+
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
@@ -10,16 +11,17 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ListView ItemsSource="{Binding Pings}" RowHeight="300">
+            <ListView ItemsSource="{Binding Pings}" RowHeight="200">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid>
-                                <Label Style="{StaticResource ListItemTextStyle}">
+                            <StackLayout>
+                                <Label Style="{DynamicResource ListItemTextStyle}">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <FormattedString.Spans>
-                                                <Span Text="{Binding Entered, StringFormat='Entered: {0} '}" />
+                                                <Span Text="{Binding Entered, StringFormat='Entered: {0}'}" />
+                                                <Span Text=" - " />
                                                 <Span Text="{Binding Identifier}" />
                                                 <Span Text=" @ " />
                                                 <Span Text="{Binding CreatedOn, StringFormat='{0:ddd MMM d, h:m:ss tt}'}" />
@@ -27,7 +29,7 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label Style="{StaticResource ListItemDetailTextStyle}">
+                                <Label Style="{DynamicResource ListItemDetailTextStyle}">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <FormattedString.Spans>
@@ -40,7 +42,7 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                            </Grid>
+                            </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -51,4 +53,5 @@
                     Grid.Row="1" />
         </Grid>
     </ContentPage.Content>
+
 </ContentPage>
