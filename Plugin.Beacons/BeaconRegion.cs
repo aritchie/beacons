@@ -45,7 +45,7 @@ namespace Plugin.Beacons
 
 
         public override string ToString() => $"[Identifier: {this.Identifier} - UUID: {this.Uuid} - Major: {this.Major ?? 0} - Minor: {this.Minor ?? 0}]";
-        public bool Equals(BeaconRegion other) => (this.Identifier, this.Uuid, this.Major, this.Minor) == (other.Identifier, other.Uuid, other.Major, other.Minor);
+        public bool Equals(BeaconRegion other) => (this.Identifier, this.Uuid, this.Major, this.Minor).Equals((other?.Identifier, other?.Uuid, other?.Major, other?.Minor));
         public static bool operator ==(BeaconRegion left, BeaconRegion right) => Equals(left, right);
         public static bool operator !=(BeaconRegion left, BeaconRegion right) => !Equals(left, right);
         public override bool Equals(object obj) => obj is BeaconRegion region && this.Equals(region);
